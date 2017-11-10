@@ -1,18 +1,29 @@
 {
-  "account_list": [
+  "accounts": [
     {
-      "account_id": 110000,
-      "account_name": "AppCo ITC",
+      "account_id": 123456,
+      "vertical": "apps",
+      "last_sales_date": "2017-11-02",
       "account_status": "OK",
-      "first_sales_date": "2012-06-15",
-      "last_sales_date": "2014-01-05",
-      "platform": "GP",
-      "publisher_name": "AppCo"
+      "first_sales_date": "2016-04-17",
+      "publisher_name": "Demo Test Limited",
+      "account_name": "AA ANA",
+      "market": "ios"
+    },
+    {
+      "account_id": 654321,
+      "vertical": "ads",
+      "last_sales_date": null,
+      "account_status": "OK",
+      "first_sales_date": null,
+      "publisher_name": null,
+      "account_name": "Search Ads - Demo",
+      "market": "apple_search_ads"
     }
   ],
-  "code": 200,
-  "next_page": null,
   "page_index": 0,
+  "code": 200,
+  "prev_page": null,
   "page_num": 1,
-  "prev_page": null
+  "next_page": null
 }

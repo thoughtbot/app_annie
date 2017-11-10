@@ -1,5 +1,5 @@
 module AppAnnie
-  class App
+  class Product
 
     attr_reader :raw,
                 :account,
@@ -9,24 +9,30 @@ module AppAnnie
                 :name,
                 :first_sales_date,
                 :last_sales_date,
-                :icon
+                :icon,
+                :device_codes,
+                :devices,
+                :market
 
     def initialize(account, attributes)
       @raw = attributes
       @account = account
-      @id = attributes['app_id']
-      @name = attributes['app_name']
+      @id = attributes['product_id']
+      @name = attributes['product_name']
       @status = attributes['status']
       @icon = attributes['icon']
       @first_sales_date = attributes['first_sales_date']
       @last_sales_date = attributes['last_sales_date']
+      @device_codes = attributes['device_codes']
+      @devices = attributes['devices']
+      @market = attributes['market']
     end
 
     def sales(options = {})
       response = AppAnnie.connection.get do |req|
         req.headers['Authorization'] = "Bearer #{AppAnnie.api_key}"
         req.headers['Accept'] = 'application/json'
-        req.url "/v1/accounts/#{@account.id}/apps/#{@id}/sales", options
+        req.url "#{API_ROOT}/#{@account.id}/products/#{@id}/sales", options
       end
 
       if response.status == 200

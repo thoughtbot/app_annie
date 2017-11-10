@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe AppAnnie do
+  let(:path) { '/v1.2/accounts' }
 
   it 'has a version number' do
     expect(AppAnnie::VERSION).not_to be_nil
@@ -18,7 +19,6 @@ describe AppAnnie do
       ENV['APPANNIE_API_KEY'] = 'def456'
       expect(AppAnnie.api_key).to eq('def456')
     end
-
   end
 
   describe 'fetching a list of accounts' do
@@ -30,25 +30,25 @@ describe AppAnnie do
       let(:stub_connection) do
         Faraday.new do |builder|
           builder.adapter :test do |stub|
-            stub.get('/v1/accounts') {[ 200, {}, File.read(mock_resp_file) ]}
+            stub.get(path) {[ 200, {}, File.read(mock_resp_file) ]}
           end
         end
       end
 
       it 'returns an array of AppAnnie::Account objects' do
         result = AppAnnie.accounts
-        expect(result.size).to eq(1)
+        expect(result.size).to eq(2)
         expect(result.first.class).to be(AppAnnie::Account)
       end
-
     end
 
     describe 'when an authorization error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts') {[ 401, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 401, {}, '' ]} }
         end
       end
+
       it 'raises an exception' do
         expect { AppAnnie.accounts }.to raise_error(AppAnnie::Unauthorized)
       end
@@ -57,9 +57,10 @@ describe AppAnnie do
     describe 'when a rate limit error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts') {[ 429, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 429, {}, '' ]} }
         end
       end
+
       it 'raises an exception' do
         expect { AppAnnie.accounts }.to raise_error(AppAnnie::RateLimitExceeded)
       end
@@ -68,9 +69,10 @@ describe AppAnnie do
     describe 'when a server error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts') {[ 500, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 500, {}, '' ]} }
         end
       end
+
       it 'raises an exception' do
         expect { AppAnnie.accounts }.to raise_error(AppAnnie::ServerError)
       end
@@ -79,14 +81,14 @@ describe AppAnnie do
     describe 'when a maintenance error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts') {[ 503, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 503, {}, '' ]} }
         end
       end
+
       it 'raises an exception' do
         expect { AppAnnie.accounts }.to raise_error(AppAnnie::ServerUnavailable)
       end
     end
-
   end
-
 end
+
