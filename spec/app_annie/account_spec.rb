@@ -26,80 +26,85 @@ describe AppAnnie::Account do
     end
   end
 
-  describe 'retrieving a list of apps' do
+  describe 'retrieving a list of products' do
     let(:account) { AppAnnie::Account.new('account_id' => 123) }
+    let(:path) { '/v1.2/accounts/123/products' }
     before { allow(AppAnnie).to receive(:connection).and_return(stub_connection) }
 
     describe 'successfully' do
+      let(:mock_resp_file) { File.expand_path("../../api_fixtures/products.json", __FILE__) }
       let(:stub_connection) do
         Faraday.new do |builder|
           builder.adapter :test do |stub|
-            stub.get('/v1/accounts/123/apps') {[ 200, {}, "{\"page_index\":0,\"code\":200,\"app_list\":[{\"status\":true,\"app_name\":\"Test App\",\"app_id\":\"com.testco.TestApp\",\"last_sales_date\":\"2013-12-25\",\"first_sales_date\":\"2012-07-29\",\"icon\":\"https://lh5.ggpht.com/87Gx7aUL0CajI9b9mLWkFJxcwlCydi_KYxDTZMeyu7nzaDo4MwOA2_8jn8Xz666hUG4=w300\"}],\"prev_page\":null,\"page_num\":1,\"next_page\":null}" ]}
+            stub.get(path) {[ 200, {}, File.read(mock_resp_file)]}
           end
         end
       end
 
-      it 'returns an array of AppAnnie::App objects' do
-        result = account.apps
+      it 'returns an array of AppAnnie::Product objects' do
+        result = account.products
         expect(result.size).to eq(1)
-        expect(result.first.class).to be(AppAnnie::App)
+        expect(result.first.class).to be(AppAnnie::Product)
       end
 
       it 'sets properties appropriately from the response' do
-        app = account.apps.first
-        expect(app.account).to be(account)
-        expect(app.status).to eq(true)
-        expect(app.name).to eq('Test App')
-        expect(app.id).to eq('com.testco.TestApp')
-        expect(app.last_sales_date).to eq('2013-12-25')
-        expect(app.first_sales_date).to eq('2012-07-29')
-        expect(app.icon).to eq('https://lh5.ggpht.com/87Gx7aUL0CajI9b9mLWkFJxcwlCydi_KYxDTZMeyu7nzaDo4MwOA2_8jn8Xz666hUG4=w300')
+        product = account.products.first
+        expect(product.account).to be(account)
+        expect(product.status).to eq(true)
+        expect(product.name).to eq('App Annie')
+        expect(product.id).to eq(1)
+        expect(product.last_sales_date).to eq('2017-11-04')
+        expect(product.first_sales_date).to eq('2016-04-17')
+        expect(product.icon).to eq('https://scontent-frx5-1.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/13643693_140395686402695_1534494044_n.jpg')
+        expect(product.market).to eq('ios')
+        expect(product.devices).to eq(['Universal'])
+        expect(product.device_codes).to eq(["iphone", "ipad"])
       end
-
     end
 
     describe 'when an authorization error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts/123/apps') {[ 401, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 401, {}, '' ]} }
         end
       end
       it 'raises an exception' do
-        expect { account.apps }.to raise_error(AppAnnie::Unauthorized)
+        expect { account.products}.to raise_error(AppAnnie::Unauthorized)
       end
     end
 
     describe 'when a rate limit error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts/123/apps') {[ 429, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 429, {}, '' ]} }
         end
       end
       it 'raises an exception' do
-        expect { account.apps }.to raise_error(AppAnnie::RateLimitExceeded)
+        expect { account.products }.to raise_error(AppAnnie::RateLimitExceeded)
       end
     end
 
     describe 'when a server error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts/123/apps') {[ 500, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 500, {}, '' ]} }
         end
       end
       it 'raises an exception' do
-        expect { account.apps }.to raise_error(AppAnnie::ServerError)
+        expect { account.products }.to raise_error(AppAnnie::ServerError)
       end
     end
 
     describe 'when a maintenance error is encountered' do
       let(:stub_connection) do
         Faraday.new do |builder|
-          builder.adapter(:test) { |stub| stub.get('/v1/accounts/123/apps') {[ 503, {}, '' ]} }
+          builder.adapter(:test) { |stub| stub.get(path) {[ 503, {}, '' ]} }
         end
       end
       it 'raises an exception' do
-        expect { account.apps }.to raise_error(AppAnnie::ServerUnavailable)
+        expect { account.products }.to raise_error(AppAnnie::ServerUnavailable)
       end
     end
   end
 end
+
