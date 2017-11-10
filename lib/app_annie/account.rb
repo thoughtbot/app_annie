@@ -21,15 +21,15 @@ module AppAnnie
       @last_sales_date = attributes['last_sales_date']
     end
 
-    def apps(options = {})
+    def products(options = {})
       response = AppAnnie.connection.get do |req|
         req.headers['Authorization'] = "Bearer #{AppAnnie.api_key}"
         req.headers['Accept'] = 'application/json'
-        req.url "/v1/accounts/#{id}/apps", options
+        req.url "#{API_ROOT}/#{id}/products", options
       end
 
       if response.status == 200
-        JSON.parse(response.body)['app_list'].map { |hash| App.new(self, hash) }
+        JSON.parse(response.body)['products'].map { |hash| Product.new(self, hash) }
       else
         ErrorResponse.raise_for(response)
       end
@@ -39,7 +39,7 @@ module AppAnnie
       response = AppAnnie.connection.get do |req|
         req.headers['Authorization'] = "Bearer #{AppAnnie.api_key}"
         req.headers['Accept'] = 'application/json'
-        req.url "/v1/accounts/#{id}/sales", options
+        req.url "#{API_ROOT}/#{id}/sales", options
       end
 
       if response.status == 200
