@@ -54,10 +54,11 @@ module AppAnnie
     end
   end
 
-  class Unauthorized < Exception; end
-  class RateLimitExceeded < Exception; end
-  class ServerError < Exception; end
-  class ServerUnavailable < Exception; end
-  class BadResponse < Exception; end
+  class AppAnnieError < RuntimeError; end
+  class Unauthorized < AppAnnieError; end
+  class RateLimitExceeded < AppAnnieError; end
+  class ServerError < AppAnnieError; end
+  class ServerUnavailable < AppAnnieError; end
+  class BadResponse < AppAnnieError; end
 
 end

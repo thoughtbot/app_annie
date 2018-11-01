@@ -1,6 +1,6 @@
 module AppAnnie
   class MetaData
-    API_ROOT = "/v1.2/".freeze
+    API_ROOT = "/v1.2".freeze
 
     def self.translate_ids(opts)
       [:market, :package_codes].each do |key|
