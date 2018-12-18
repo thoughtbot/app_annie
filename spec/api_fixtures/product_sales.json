@@ -1,0 +1,44 @@
+{
+  "sales_list": [
+    {
+      "date": "2017-05-16",
+      "country": "AE",
+      "units": {
+        "product": {
+          "promotions": 0,
+          "downloads": 2,
+          "updates": 1,
+          "refunds": 0
+        },
+        "iap": {
+          "promotions": 0,
+          "sales": 0,
+          "refunds": 0
+        }
+      },
+      "revenue": {
+        "product": {
+          "promotions": "0.00",
+          "downloads": "0.00",
+          "updates": "0.00",
+          "refunds": "0.00"
+        },
+        "iap": {
+          "promotions": "0.00",
+          "sales": "0.00",
+          "refunds": "0.00"
+        },
+        "ad": "0.00"
+      }
+    }
+  ],
+  "next_page": null,
+  "code": 200,
+  "prev_page": null,
+  "vertical": "apps",
+  "page_num": 1,
+  "iap_sales_list": [],
+  "currency": "USD",
+  "page_index": 0,
+  "market": "ios"
+}
